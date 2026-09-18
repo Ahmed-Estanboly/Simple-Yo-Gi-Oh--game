@@ -58,7 +58,10 @@ function renderHand(player)
         console.log(`Rendering card: ${card.name} (ID: ${card.id})`);
         // console.log(card);
         
-        const imageUrl = card.imgs[0].image_url_small;
+        let imageUrl = card.imgs[0].image_url_small;
+        if(player === "opponent"){
+            imageUrl = 'images/card-back.jpg';
+        }
         if (!imageUrl) {
             console.log("no image url found");
             return;

@@ -836,7 +836,6 @@ button {
 .game-over-modal.is-opening .game-over-content {
   transform: translateY(0) scale(1);
 }
-}
 
 .game-over-content h2 {
   color: var(--gold-bright);
