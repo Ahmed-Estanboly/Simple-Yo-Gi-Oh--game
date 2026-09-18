@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Simple Yo-Gi-Oh!</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<header class="game-header" id="game-header">
+		<h1>Simple Yo-Gi-Oh!</h1>
+		<div class="game-status" aria-label="Game status">
+			<p>Turn: <span id="turn-number">0</span></p>
+			<p>Player: <span id="current-player">-</span></p>
+			<p>Phase: <span id="current-phase">Waiting</span></p>
+		</div>
+	</header>
+
+	<div class="game-layout">
+	<main class="game-board" id="game-board">
+		<section class="opponent-area" id="opponent-area" aria-labelledby="opponent-name">
+			<div class="duelist-header">
+				<h2 id="opponent-name">Opponent</h2>
+				<p>Life Points: <span id="opponent-life-points">8000</span></p>
+			</div>
+
+			<div class="opponent-resources" aria-label="Opponent resources">
+				<div class="deck-zone" id="opponent-deck" aria-label="Opponent deck"></div>
+				<div class="graveyard-zone" id="opponent-graveyard" aria-label="Opponent graveyard"></div>
+				<div class="opponent-hand" id="opponent-hand" aria-label="Opponent hand"></div>
+			</div>
+
+			<div class="monster-zones" id="opponent-monster-zones" aria-label="Opponent monster zones">
+				<div class="monster-zone" id="opponent-monster-zone-1" data-zone-owner="opponent" data-zone-index="1"></div>
+				<div class="monster-zone" id="opponent-monster-zone-2" data-zone-owner="opponent" data-zone-index="2"></div>
+				<div class="monster-zone" id="opponent-monster-zone-3" data-zone-owner="opponent" data-zone-index="3"></div>
+				<div class="monster-zone" id="opponent-monster-zone-4" data-zone-owner="opponent" data-zone-index="4"></div>
+			</div>
+		</section>
+
+		<section class="center-area" id="center-area" aria-label="Game information">
+			<div class="vs-indicator" id="vs-indicator" aria-hidden="true">VS</div>
+			<div class="game-messages" id="game-messages" role="status" aria-live="polite">
+				<p id="game-message">Start a new game to begin.</p>
+			</div>
+			<div class="battle-notifications" id="battle-notifications" aria-live="polite"></div>
+			<p class="phase-information" id="phase-information">Waiting for game start</p>
+		</section>
+
+		<section class="player-area" id="player-area" aria-labelledby="player-name">
+			<div class="duelist-header">
+				<h2 id="player-name">Player</h2>
+				<p>Life Points: <span id="player-life-points">8000</span></p>
+			</div>
+
+			<div class="monster-zones" id="player-monster-zones" aria-label="Player monster zones">
+				<div class="monster-zone" id="player-monster-zone-1" data-zone-owner="player" data-zone-index="1"></div>
+				<div class="monster-zone" id="player-monster-zone-2" data-zone-owner="player" data-zone-index="2"></div>
+				<div class="monster-zone" id="player-monster-zone-3" data-zone-owner="player" data-zone-index="3"></div>
+				<div class="monster-zone" id="player-monster-zone-4" data-zone-owner="player" data-zone-index="4"></div>
+			</div>
+
+			<div class="player-resources" aria-label="Player resources">
+				<div class="deck-zone" id="player-deck" aria-label="Player deck"></div>
+				<div class="graveyard-zone" id="player-graveyard" aria-label="Player graveyard"></div>
+				<div class="player-hand" id="player-hand" aria-label="Player hand"></div>
+			</div>
+		</section>
+	</main>
+
+	<nav class="game-controls" id="game-controls" aria-label="Game controls">
+		<button type="button" id="start-game-button" class="game-button game-button-start">Start Game</button>
+		<button type="button" id="draw-button" class="game-button" disabled>Draw</button>
+		<button type="button" id="main-phase-button" class="game-button" disabled>Main Phase</button>
+		<button type="button" id="battle-phase-button" class="game-button" disabled>Battle Phase</button>
+		<button type="button" id="end-turn-button" class="game-button" disabled>End Turn</button>
+		<button type="button" id="surrender-button" class="game-button game-button-danger" disabled>Surrender</button>
+		<button type="button" id="new-game-button" class="game-button">New Game</button>
+	</nav>
+	</div>
+
+	<template id="monster-card-template">
+		<article class="monster-card" data-card-id="">
+			<div class="monster-card-image-wrapper">
+				<img class="monster-card-image" data-card-image src="" alt="">
+			</div>
+			<div class="monster-card-content">
+				<h3 class="monster-card-name" data-card-name></h3>
+				<p class="monster-card-level">Level: <span data-card-level></span></p>
+				<p class="monster-card-attribute">Attribute: <span data-card-attribute></span></p>
+				<p class="monster-card-type">Type: <span data-card-type></span></p>
+				<div class="monster-card-stats">
+					<p>ATK: <span data-card-atk></span></p>
+					<p>DEF: <span data-card-def></span></p>
+				</div>
+				<p class="monster-card-description" data-card-description></p>
+			</div>
+		</article>
+	</template>
+
+	<div class="game-over-modal" id="game-over-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-heading" hidden>
+		<div class="game-over-content">
+			<h2 id="game-over-heading">Game Over</h2>
+			<p id="game-over-message"></p>
+			<p>Final Result: <span id="final-result"></span></p>
+			<button type="button" id="modal-new-game-button" class="game-button">New Game</button>
+		</div>
+	</div>
+	<script src="js/ui.js"></script>
+	<script src="js/api.js"></script>
+	<script src="js/deck.js"></script>
+	<script src="js/game.js"></script>
+	<script src="js/ai.js"></script>
+</body>
+</html>
