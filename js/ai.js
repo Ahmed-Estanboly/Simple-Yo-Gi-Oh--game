@@ -84,6 +84,7 @@ function aiTurn() {
     if (gameState.gameOver) return;
 
     if (player.field.length === 0) {
+      playGameAudio("audios/attack.mp3", 0.65);
       animateCard(attacker.id, "is-direct-attack");
       player.lp -= attacker.atk;
       setGameMessage(
@@ -105,6 +106,7 @@ function aiTurn() {
     const target = player.field[targetIndex];
     const damage = attacker.atk - target.atk;
     setGameMessage(`Opponent's ${attacker.name} attacked ${target.name}.`);
+    playGameAudio("audios/attack.mp3", 0.65);
     animateCard(attacker.id, "is-attacking");
     animateCard(target.id, "targeted");
     setTimeout(() => {
