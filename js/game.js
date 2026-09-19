@@ -54,7 +54,6 @@ function endGame(loser, reason) {
 
   gameState.gameOver = true;
   stopBackgroundAudio();
-  const winner = loser === "player" ? "opponent" : "player";
   const playerLost = loser === "player";
   const resultMessage = playerLost ? "You lose." : "You win!";
   const reasonMessage =
@@ -78,8 +77,8 @@ function endGame(loser, reason) {
   battlePhaseButton.disabled = true;
   endTurnButton.disabled = true;
   surrenderButton.disabled = true;
-  clickable("player", false, false, false);
-  clickable("opponent", false, false, false);
+  clickable("player", false);
+  clickable("opponent", false);
   if (gameOverModal) {
     gameOverModal.hidden = false;
     gameOverModal.classList.remove("is-opening");
@@ -99,23 +98,7 @@ function checkGameEnd() {
   }
 }
 
-function clickable(player, fieldB, handB, deckB) {
-  for (let i = 0; i < gameState.players[player].field.length; i++) {
-    let currentCard = gameState.players[player].field[i];
-    let currentCardElement = document.querySelector(
-      `.card[data-id='${currentCard.id}']`,
-    );
-    if (fieldB) currentCardElement.style.pointerEvents = "auto";
-    else currentCardElement.style.pointerEvents = "none";
-  }
-  for (let i = 0; i < gameState.players[player].hand.length; i++) {
-    let currentCard = gameState.players[player].hand[i];
-    let currentCardElement = document.querySelector(
-      `.card[data-id='${currentCard.id}']`,
-    );
-    if (handB) currentCardElement.style.pointerEvents = "auto";
-    else currentCardElement.style.pointerEvents = "none";
-  }
+function clickable(player, deckB) {
   let deckElement = player === "player" ? plDeck : opDeck;
   if (deckB) deckElement.style.pointerEvents = "auto";
   else deckElement.style.pointerEvents = "none";
@@ -163,8 +146,8 @@ async function initializeGame() {
   renderGraveYard("opponent");
   renderField("player");
   renderField("opponent");
-  clickable("player", false, false, false);
-  clickable("opponent", false, false, false);
+  clickable("player", false);
+  clickable("opponent", false);
   updateLP();
   updateHeader();
   if (gameState.currentPlayer === "player") {
@@ -261,11 +244,9 @@ function turnSwitch() {
 }
 function drawPhase() {
   gameState.phase = "draw";
-  clickable(gameState.currentPlayer, false, false, true);
+  clickable(gameState.currentPlayer, true);
   clickable(
     gameState.currentPlayer === "player" ? "opponent" : "player",
-    false,
-    false,
     false,
   );
   console.log(`[Game] Entering draw phase for ${gameState.currentPlayer}`);
@@ -279,11 +260,9 @@ function drawPhase() {
 function mainPhase() {
   gameState.phase = "main";
   animateMainPhaseHand(gameState.currentPlayer);
-  clickable(gameState.currentPlayer, false, true, false);
+  clickable(gameState.currentPlayer, false);
   clickable(
     gameState.currentPlayer === "player" ? "opponent" : "player",
-    false,
-    false,
     false,
   );
   console.log(`[Game] Entering main phase for ${gameState.currentPlayer}`);
@@ -296,16 +275,15 @@ function mainPhase() {
     let card = gameState.players[gameState.currentPlayer].hand[i];
     let cardElement = document.querySelector(`.card[data-id='${card.id}']`);
     cardElement.addEventListener("click", () => {
+      if (gameState.phase !== "main") return;
       summonMonster(gameState.currentPlayer, card.id);
     });
   }
 }
 function battlePhase() {
-  clickable(gameState.currentPlayer, true, false, false);
+  clickable(gameState.currentPlayer, false);
   clickable(
     gameState.currentPlayer === "player" ? "opponent" : "player",
-    true,
-    false,
     false,
   );
   gameState.phase = "battle";
@@ -321,6 +299,7 @@ function battlePhase() {
     let cardElement = document.querySelector(`.card[data-id='${card.id}']`);
 
     cardElement.onclick = () => {
+      if (gameState.phase !== "battle") return;
       //turn off clicking
       for (
         let j = 0;
@@ -331,7 +310,7 @@ function battlePhase() {
         let currentCardElement = document.querySelector(
           `.card[data-id='${currentCard.id}']`,
         );
-        currentCardElement.style.pointerEvents = "none";
+        currentCardElement.onclick = null;
       }
       let opponent =
         gameState.currentPlayer === "player" ? "opponent" : "player";
@@ -355,13 +334,14 @@ function battlePhase() {
           `.card[data-id='${opponentCard.id}']`,
         );
         opponentCardElement.onclick = () => {
+          if (gameState.phase !== "battle") return;
           //turn off clicking
           for (let j = 0; j < gameState.players[opponent].field.length; j++) {
             let currentCard = gameState.players[opponent].field[j];
             let currentCardElement = document.querySelector(
               `.card[data-id='${currentCard.id}']`,
             );
-            currentCardElement.style.pointerEvents = "none";
+            currentCardElement.onclick = null;
           }
           let damage = card.atk - opponentCard.atk;
           console.log(
@@ -524,10 +504,10 @@ function startNewGame() {
   renderGraveYard("opponent");
   renderField("player");
   renderField("opponent");
-  clickable("player", false, false, false);
-  clickable("opponent", false, false, false);
+  clickable("player", false);
+  clickable("opponent", false);
   updateLP();
-  turnNumber.textContent = gameState.turn;
+  setGameMessage("Start a new game to begin.");
   updateHeader();
 }
 

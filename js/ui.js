@@ -12,12 +12,6 @@ let turnPopup = document.getElementById("turn-popup");
 const audioTracks = {
   intro: new Audio("audios/yu_gi_oh_intro.mp3"),
   background: new Audio("audios/Yo-Gi-Oh! background soundtrack.mp3"),
-  attack: "audios/attack.mp3",
-  deal: "audios/dealing-one-card.mp3",
-  defeat: "audios/lost.mp3",
-  summon: "audios/summoning.mp3",
-  surrender: "audios/surrender.mp3",
-  victory: "audios/flawless_victory.mp3",
 };
 
 audioTracks.background.loop = true;
@@ -170,8 +164,6 @@ function renderHand(player) {
   handElement.replaceChildren();
   hand.forEach((card) => {
     console.log(`Rendering card: ${card.name} (ID: ${card.id})`);
-    // console.log(card);
-
     let imageUrl = card.imgs[0].image_url_small;
     if (player === "opponent") {
       imageUrl = "images/card-back.jpg";
@@ -261,10 +253,6 @@ function renderField(player) {
   const fieldElement = player === "player" ? playerField : opponentField;
   const field = gameState.players[player]?.field;
   const zones = fieldElement?.querySelectorAll(".monster-zone");
-  // console.log(fieldElement);
-  // console.log(Array.isArray(field));
-  // console.log(zones);
-
   if (!fieldElement || !Array.isArray(field) || !zones) {
     return;
   }
@@ -310,5 +298,3 @@ function updateLP() {
   playerLP.textContent = gameState.players.player.lp;
   opponentLP.textContent = gameState.players.opponent.lp;
 }
-
-// alert('Open The Page In Full Screen Mode (Fn + F11)');

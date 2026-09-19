@@ -1105,23 +1105,3 @@ button {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #starting-page,
-  .game-header,
-  .game-layout,
-  .game-over-modal,
-  .game-over-content {
-    transition: none;
-  }
-
-  .card.is-drawing,
-  .card.is-summoning,
-  .graveyard-zone.is-receiving-card,
-  .deck-zone.is-draw-phase,
-  .monster-zone.is-battle-player-glow,
-  .monster-zone.is-battle-opponent-glow,
-  .player-hand.is-main-phase-glow .card,
-  .opponent-hand.is-main-phase-glow .card {
-    animation: none;
-  }
-}
