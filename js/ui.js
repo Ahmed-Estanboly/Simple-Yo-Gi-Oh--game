@@ -66,7 +66,7 @@ function showPlayerTurnPopup() {
   turnPopupTimeout = setTimeout(() => {
     turnPopup.classList.remove("is-visible");
     turnPopup.setAttribute("aria-hidden", "true");
-  }, 1000);
+  }, 1200);
 }
 
 function showGamePage() {
@@ -113,6 +113,50 @@ function animateCard(cardId, animationClass) {
   cardElement.classList.remove(animationClass);
   void cardElement.offsetWidth;
   cardElement.classList.add(animationClass);
+}
+
+function animateBattleZones() {
+  const playerZones = document.querySelectorAll(
+    "#player-monster-zones .monster-zone",
+  );
+  const opponentZones = document.querySelectorAll(
+    "#opponent-monster-zones .monster-zone",
+  );
+
+  [...playerZones, ...opponentZones].forEach((zone) => {
+    zone.classList.remove("is-battle-player-glow", "is-battle-opponent-glow");
+  });
+
+  void document.body.offsetWidth;
+  playerZones.forEach((zone) => zone.classList.add("is-battle-player-glow"));
+  opponentZones.forEach((zone) =>
+    zone.classList.add("is-battle-opponent-glow"),
+  );
+
+  setTimeout(() => {
+    [...playerZones, ...opponentZones].forEach((zone) => {
+      zone.classList.remove(
+        "is-battle-player-glow",
+        "is-battle-opponent-glow",
+      );
+    });
+  }, 2000);
+}
+
+function animateMainPhaseHand(player) {
+  const handElement = document.getElementById(`${player}-hand`);
+  if (!handElement) return;
+
+  handElement.querySelectorAll(".card.is-drawing").forEach((card) => {
+    card.classList.remove("is-drawing");
+  });
+  handElement.classList.remove("is-main-phase-glow");
+  void document.body.offsetWidth;
+  handElement.classList.add("is-main-phase-glow");
+
+  setTimeout(() => {
+    handElement.classList.remove("is-main-phase-glow");
+  }, 1000);
 }
 
 function renderHand(player) {
@@ -191,6 +235,11 @@ function renderDeck(player) {
     return;
   }
 
+  deckElement.classList.toggle(
+    "is-draw-phase",
+    gameState.phase === "draw" && gameState.currentPlayer === player,
+  );
+
   deckElement.replaceChildren();
 
   if (deck.length > 0) {
@@ -249,9 +298,17 @@ function updateHeader() {
   turnNumber.textContent = gameState.turn;
   curPlayer.textContent = gameState.currentPlayer;
   curPhase.textContent = gameState.phase;
+  document.querySelectorAll(".deck-zone").forEach((deckElement) => {
+    const player = deckElement.id === "player-deck" ? "player" : "opponent";
+    deckElement.classList.toggle(
+      "is-draw-phase",
+      gameState.phase === "draw" && gameState.currentPlayer === player,
+    );
+  });
 }
 function updateLP() {
   playerLP.textContent = gameState.players.player.lp;
   opponentLP.textContent = gameState.players.opponent.lp;
 }
-alert('Open The Page In Full Screen Mode (Fn + F11)');
+
+// alert('Open The Page In Full Screen Mode (Fn + F11)');

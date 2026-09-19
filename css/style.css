@@ -321,6 +321,13 @@ button {
   );
 }
 
+.deck-zone.is-draw-phase {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 0.7rem rgba(244, 191, 91, 0.65),
+    0 0 1.5rem rgba(244, 191, 91, 0.3), inset 0 0 1rem rgba(244, 191, 91, 0.2);
+  animation: deck-draw-glow 1.25s ease-in-out infinite alternate;
+}
+
 .deck-zone::after {
   content: "";
   position: absolute;
@@ -365,6 +372,14 @@ button {
   border-color: var(--cyan);
   background: rgba(101, 217, 232, 0.08);
   box-shadow: inset 0 0 18px rgba(101, 217, 232, 0.08);
+}
+
+.monster-zone.is-battle-player-glow {
+  animation: battle-player-zone-glow 1s ease-out;
+}
+
+.monster-zone.is-battle-opponent-glow {
+  animation: battle-opponent-zone-glow 1s 1s ease-out;
 }
 
 .monster-zone:has(.monster-card)::before {
@@ -625,6 +640,11 @@ button {
   filter: brightness(1.08);
   box-shadow: 0 0 5px 1px rgba(188, 154, 32, 0.441);
   /* transform: translateY(-4px); */
+}
+
+.player-hand.is-main-phase-glow .card,
+.opponent-hand.is-main-phase-glow .card {
+  animation: main-phase-card-glow 1s ease-out;
 }
 
 .card-image {
@@ -997,6 +1017,75 @@ button {
   }
 }
 
+@keyframes battle-player-zone-glow {
+  0% {
+    border-color: var(--cyan);
+    background: rgba(101, 217, 232, 0.2);
+    box-shadow: 0 0 0 rgba(101, 217, 232, 0),
+      inset 0 0 0 rgba(101, 217, 232, 0);
+  }
+  35% {
+    border-color: var(--gold-bright);
+    background: rgba(244, 191, 91, 0.16);
+    box-shadow: 0 0 24px rgba(244, 191, 91, 0.72),
+      inset 0 0 18px rgba(244, 191, 91, 0.22);
+  }
+  100% {
+    border-color: rgba(97, 125, 168, 0.62);
+    background: rgba(31, 43, 64, 0.3);
+    box-shadow: 0 0 0 rgba(101, 217, 232, 0),
+      inset 0 0 0 rgba(101, 217, 232, 0);
+  }
+}
+
+@keyframes main-phase-card-glow {
+  0% {
+    filter: brightness(1);
+    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.45);
+  }
+  35% {
+    filter: brightness(1.3) saturate(1.15);
+    box-shadow: 0 0 24px rgba(244, 191, 91, 0.8),
+      inset 0 0 12px rgba(244, 191, 91, 0.22);
+  }
+  100% {
+    filter: brightness(1);
+    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.45);
+  }
+}
+
+@keyframes battle-opponent-zone-glow {
+  0% {
+    border-color: rgba(97, 125, 168, 0.62);
+    background: rgba(31, 43, 64, 0.3);
+    box-shadow: 0 0 0 rgba(239, 91, 91, 0),
+      inset 0 0 0 rgba(239, 91, 91, 0);
+  }
+  35% {
+    border-color: var(--red);
+    background: rgba(239, 91, 91, 0.18);
+    box-shadow: 0 0 26px rgba(239, 91, 91, 0.78),
+      inset 0 0 20px rgba(239, 91, 91, 0.25);
+  }
+  100% {
+    border-color: rgba(97, 125, 168, 0.62);
+    background: rgba(31, 43, 64, 0.3);
+    box-shadow: 0 0 0 rgba(239, 91, 91, 0),
+      inset 0 0 0 rgba(239, 91, 91, 0);
+  }
+}
+
+@keyframes deck-draw-glow {
+  from {
+    box-shadow: 0 0 0.55rem rgba(244, 191, 91, 0.45),
+      0 0 1.1rem rgba(244, 191, 91, 0.2), inset 0 0 0.7rem rgba(244, 191, 91, 0.12);
+  }
+  to {
+    box-shadow: 0 0 1rem rgba(244, 191, 91, 0.8),
+      0 0 2rem rgba(244, 191, 91, 0.4), inset 0 0 1.3rem rgba(244, 191, 91, 0.28);
+  }
+}
+
 .graveyard-zone.is-receiving-card {
   animation: graveyard-receive 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -1027,7 +1116,12 @@ button {
 
   .card.is-drawing,
   .card.is-summoning,
-  .graveyard-zone.is-receiving-card {
+  .graveyard-zone.is-receiving-card,
+  .deck-zone.is-draw-phase,
+  .monster-zone.is-battle-player-glow,
+  .monster-zone.is-battle-opponent-glow,
+  .player-hand.is-main-phase-glow .card,
+  .opponent-hand.is-main-phase-glow .card {
     animation: none;
   }
 }

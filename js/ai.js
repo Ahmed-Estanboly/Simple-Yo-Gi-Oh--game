@@ -33,6 +33,7 @@ function aiTurn() {
     if (gameState.gameOver) return;
 
     gameState.phase = "main";
+    animateMainPhaseHand("opponent");
     updateHeader();
     setGameMessage("Opponent is thinking about its move...");
     scheduleAITurnStep(summonStep);
@@ -60,6 +61,7 @@ function aiTurn() {
     }
 
     gameState.phase = "battle";
+  animateBattleZones();
     updateHeader();
     setGameMessage("Opponent is choosing an attack...");
     scheduleAITurnStep(attackStep);

@@ -250,7 +250,7 @@ function turnSwitch() {
   }
   gameState.players[gameState.currentPlayer].normalSummonUsed = false;
   gameState.turn++;
-  gameState.phase = "draw";
+  gameState.phase = "WAITING...";
   console.log(
     `[Game] Turn ${gameState.turn}: ${gameState.currentPlayer}'s draw phase`,
   );
@@ -260,6 +260,7 @@ function turnSwitch() {
   }
 }
 function drawPhase() {
+  gameState.phase = "draw";
   clickable(gameState.currentPlayer, false, false, true);
   clickable(
     gameState.currentPlayer === "player" ? "opponent" : "player",
@@ -277,6 +278,7 @@ function drawPhase() {
 }
 function mainPhase() {
   gameState.phase = "main";
+  animateMainPhaseHand(gameState.currentPlayer);
   clickable(gameState.currentPlayer, false, true, false);
   clickable(
     gameState.currentPlayer === "player" ? "opponent" : "player",
@@ -307,6 +309,7 @@ function battlePhase() {
     false,
   );
   gameState.phase = "battle";
+  animateBattleZones();
   console.log(`[Game] Entering battle phase for ${gameState.currentPlayer}`);
   setGameMessage(`${gameState.currentPlayer} entered the battle phase.`);
   for (
@@ -317,7 +320,7 @@ function battlePhase() {
     let card = gameState.players[gameState.currentPlayer].field[i];
     let cardElement = document.querySelector(`.card[data-id='${card.id}']`);
 
-    cardElement.addEventListener("click", () => {
+    cardElement.onclick = () => {
       //turn off clicking
       for (
         let j = 0;
@@ -351,7 +354,7 @@ function battlePhase() {
         let opponentCardElement = document.querySelector(
           `.card[data-id='${opponentCard.id}']`,
         );
-        opponentCardElement.addEventListener("click", () => {
+        opponentCardElement.onclick = () => {
           //turn off clicking
           for (let j = 0; j < gameState.players[opponent].field.length; j++) {
             let currentCard = gameState.players[opponent].field[j];
@@ -388,9 +391,9 @@ function battlePhase() {
             checkGameEnd();
           }, 420);
           return;
-        });
+        };
       }
-    });
+    };
   }
 }
 function endPhase() {
@@ -490,7 +493,7 @@ function startNewGame() {
   gameState = {
     turn: 1,
     currentPlayer: "player",
-    phase: "draw",
+    phase: "WAITING...",
     gameOver: false,
 
     players: {
