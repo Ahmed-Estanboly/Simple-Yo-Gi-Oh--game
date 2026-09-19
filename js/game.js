@@ -41,7 +41,7 @@ const gameOverMessage = document.getElementById('game-over-message');
 const finalResult = document.getElementById('final-result');
 const newGameButton = document.getElementById('new-game-button');
 const modalNewGameButton = document.getElementById('modal-new-game-button');
-
+const backToStartingPageButton = document.getElementById('startingPage-button');
 
 
 function setGameMessage(message) {
@@ -54,6 +54,7 @@ function endGame(loser, reason) {
     if (gameState.gameOver) return;
 
     gameState.gameOver = true;
+    stopBackgroundAudio();
     const winner = loser === "player" ? "opponent" : "player";
     const playerLost = loser === "player";
     const resultMessage = playerLost ? "You lose." : "You win!";
@@ -62,6 +63,12 @@ function endGame(loser, reason) {
         : reason === "deck-out"
             ? `${loser === "player" ? "You have no cards left to draw" : "The opponent has no cards left to draw"}.`
             : `${loser === "player" ? "Your Life Points reached 0" : "The opponent's Life Points reached 0"}.`;
+
+    if (reason === "surrender") {
+        playGameAudio('audios/surrender.mp3', 0.8);
+    } else {
+        playGameAudio(playerLost ? 'audios/lost.mp3' : 'audios/flawless_victory.mp3', 0.8);
+    }
 
     drawButton.disabled = true;
     mainPhaseButton.disabled = true;
@@ -155,6 +162,9 @@ async function initializeGame(){
     clickable("opponent",false,false,false);
     updateLP();
     updateHeader();
+    if (gameState.currentPlayer === "player") {
+        showPlayerTurnPopup();
+    }
     console.log('[Game] Initialization complete');
 }
 
@@ -175,6 +185,7 @@ function drawCard(player) {
     }
     console.log(`[Game] ${player} hand size: ${gameState.players[player].hand.length}`);
     setGameMessage(`${player} drew a card.`);
+    playGameAudio('audios/dealing-one-card.mp3', 0.45);
     renderHand(player);
     const drawnCard = document.querySelector(`#${player}-hand .card:last-child`);
     if (drawnCard) {
@@ -214,6 +225,7 @@ function summonMonster(player, cardId) {
     }
     console.log(`[Game] ${player} summoned ${card.name}`);
     setGameMessage(`${player} summoned ${card.name}.`);
+    playGameAudio('audios/summoning.mp3', 0.65);
 }   
 function turnSwitch(){
     if (gameState.currentPlayer === "player") {
@@ -226,6 +238,9 @@ function turnSwitch(){
     gameState.phase = "draw";
     console.log(`[Game] Turn ${gameState.turn}: ${gameState.currentPlayer}'s draw phase`);
     setGameMessage(`${gameState.currentPlayer}'s turn began.`);
+    if (gameState.currentPlayer === "player") {
+        showPlayerTurnPopup();
+    }
 }
 function drawPhase() {
     clickable(gameState.currentPlayer,false,false,true);
@@ -274,6 +289,7 @@ function battlePhase() {
             if(gameState.players[opponent].field.length === 0)
             {
                 animateCard(card.id, "is-direct-attack");
+                playGameAudio('audios/attack.mp3', 0.65);
                 gameState.players[opponent].lp -= card.atk;
                 console.log(`${gameState.currentPlayer} attacks directly with ${card.name} for ${card.atk} damage!`);
                 setGameMessage(`${gameState.currentPlayer} attacked directly with ${card.name} for ${card.atk} damage.`);
@@ -297,6 +313,7 @@ function battlePhase() {
                     setGameMessage(`${gameState.currentPlayer}'s ${card.name} attacked ${opponentCard.name}.`);
                     animateCard(card.id, "is-attacking");
                     animateCard(opponentCard.id, "targeted");
+                    playGameAudio('audios/attack.mp3', 0.65);
                     setTimeout(() => {
                         if (damage >= 0) {
                             gameState.players[opponent].field.splice(j, 1);
@@ -337,6 +354,7 @@ async function startGame(){
     try {
         await initializeGame();
         console.log(gameState);
+        startBackgroundAudio();
 
         drawButton.disabled = false;
         mainPhaseButton.disabled = true;
@@ -446,9 +464,12 @@ function startNewGame() {
     clickable("opponent",false,false,false);
     updateLP();
     turnNumber.textContent = gameState.turn;
-    curPlayer.textContent = 'UNKOWN';
-    curPhase.textContent = 'WAITING...';
+    updateHeader();
 }
 
 newGameButton.onclick = startNewGame;
 modalNewGameButton.onclick = startNewGame;
+backToStartingPageButton.onclick = () => {
+    startNewGame();
+    hideGamePage();
+};

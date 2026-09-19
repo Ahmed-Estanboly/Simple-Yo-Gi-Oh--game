@@ -79,10 +79,15 @@
 		<button type="button" id="end-turn-button" class="game-button" disabled>End Turn</button>
 		<button type="button" id="surrender-button" class="game-button game-button-danger" disabled>Surrender</button>
 		<button type="button" id="new-game-button" class="game-button">New Game</button>
+		<button type="button" id="startingPage-button" class="game-button">Back to Starting Page</button>
 	</nav>
 	</div>
 
-	<template id="monster-card-template">
+	<div class="turn-popup" id="turn-popup" role="status" aria-live="assertive" aria-hidden="true">
+		<span class="turn-popup-label">Your Turn</span>
+	</div>
+
+	<!-- <template id="monster-card-template">
 		<article class="monster-card" data-card-id="">
 			<div class="monster-card-image-wrapper">
 				<img class="monster-card-image" data-card-image src="" alt="">
@@ -99,7 +104,7 @@
 				<p class="monster-card-description" data-card-description></p>
 			</div>
 		</article>
-	</template>
+	</template> -->
 
 	<div class="game-over-modal" id="game-over-modal" role="dialog" aria-modal="true" aria-labelledby="game-over-heading" hidden>
 		<div class="game-over-content">

@@ -7,8 +7,69 @@ let playerField = document.getElementById('player-area');
 let opponentField = document.getElementById('opponent-area');
 let playerLP = document.getElementById('player-life-points');
 let opponentLP = document.getElementById('opponent-life-points');
+let turnPopup = document.getElementById('turn-popup');
 
-// alert('Open The Page In Full Screen Mode (Fn + F11)');
+const audioTracks = {
+    intro: new Audio('audios/yu_gi_oh_intro.mp3'),
+    background: new Audio('audios/Yo-Gi-Oh! background soundtrack.mp3'),
+    attack: 'audios/attack.mp3',
+    deal: 'audios/dealing-one-card.mp3',
+    defeat: 'audios/lost.mp3',
+    summon: 'audios/summoning.mp3',
+    surrender: 'audios/surrender.mp3',
+    victory: 'audios/flawless_victory.mp3'
+};
+
+audioTracks.background.loop = true;
+audioTracks.background.volume = 0.18;
+audioTracks.intro.volume = 0.55;
+
+function playGameAudio(track, volume = 0.6) {
+    const source = typeof track === 'string' ? track : track.src;
+    const audio = typeof track === 'string' ? new Audio(source) : track;
+    audio.volume = volume;
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    return audio;
+}
+
+function startBackgroundAudio() {
+    if (audioTracks.background.paused) {
+        audioTracks.background.play().catch(() => {});
+    }
+}
+
+function stopBackgroundAudio() {
+    audioTracks.background.pause();
+    audioTracks.background.currentTime = 0;
+}
+
+function startIntroAudio() {
+    const startingPage = document.getElementById('starting-page');
+    if (!startingPage || document.body.classList.contains('game-started')) return;
+
+    playGameAudio(audioTracks.intro, 0.55);
+}
+
+window.addEventListener('load', startIntroAudio);
+
+let turnPopupTimeout;
+
+function showPlayerTurnPopup() {
+    if (!turnPopup) return;
+
+    clearTimeout(turnPopupTimeout);
+    turnPopup.setAttribute('aria-hidden', 'false');
+    turnPopup.classList.remove('is-visible');
+    void turnPopup.offsetWidth;
+    turnPopup.classList.add('is-visible');
+    turnPopupTimeout = setTimeout(() => {
+        turnPopup.classList.remove('is-visible');
+        turnPopup.setAttribute('aria-hidden', 'true');
+    }, 1000);
+}
+
+
 function showGamePage(){
     let startingPage = document.getElementById('starting-page');
     document.body.classList.add('game-started');
@@ -17,7 +78,19 @@ function showGamePage(){
         startingPage.style.display = 'none';
     }, 650);
 }
-
+function hideGamePage()
+{
+    let startingPage = document.getElementById('starting-page');
+    stopBackgroundAudio();
+    document.body.classList.remove('game-started');
+    startingPage.classList.remove('is-exiting');
+    startingPage.classList.add('is-entering');
+    startingPage.style.display = 'block';
+    requestAnimationFrame(() => {
+        startingPage.classList.remove('is-entering');
+    });
+    startIntroAudio();
+}
 function createCardHoverInfo(card) {
     const infoElement = document.createElement('div');
     infoElement.className = 'card-hover-info';
@@ -186,3 +259,4 @@ function updateLP(){
     playerLP.textContent = gameState.players.player.lp;
     opponentLP.textContent = gameState.players.opponent.lp;
 }
+// alert('Open The Page In Full Screen Mode (Fn + F11)');

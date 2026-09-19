@@ -16,6 +16,7 @@ function aiTurn() {
 	mainPhaseButton.disabled = true;
 	battlePhaseButton.disabled = true;
 	endTurnButton.disabled = true;
+	surrenderButton.disabled = true;
 	setGameMessage("Opponent is thinking...");
 	scheduleAITurnStep(drawStep);
 
@@ -131,6 +132,8 @@ function aiTurn() {
 		mainPhaseButton.disabled = true;
 		battlePhaseButton.disabled = true;
 		endTurnButton.disabled = false;
+		surrenderButton.disabled = false;
+		setGameMessage("Your turn!");
 		updateHeader();
 	}
 }
