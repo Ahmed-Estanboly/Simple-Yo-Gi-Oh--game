@@ -61,7 +61,7 @@ function aiTurn() {
     }
 
     gameState.phase = "battle";
-  animateBattleZones();
+    animateBattleZones();
     updateHeader();
     setGameMessage("Opponent is choosing an attack...");
     scheduleAITurnStep(attackStep);
@@ -69,8 +69,12 @@ function aiTurn() {
 
   function attackStep() {
     if (gameState.gameOver) return;
-
-    const attacker = ai.field[0];
+    const strongestCard = ai.field.reduce((strongest, card) =>
+      card.atk > strongest.atk ? card : strongest,
+    );
+    const attacker = strongestCard;
+    console.log("attaker: ",attacker);
+    console.log("ai.field[0]: ",ai.field[0]);
     if (!attacker) {
       finishAITurn();
       return;
@@ -104,7 +108,15 @@ function aiTurn() {
         targetIndex = index;
       }
     }
+    console.log("victom card name: ",player.field[targetIndex].name);
+    console.log("attacker card name: ",attacker.name);
+    console.log("victom card atk: ",player.field[targetIndex].atk);
+    console.log("attacker card atk: ",attacker.atk);
 
+    if(player.field[targetIndex].atk > attacker.atk) {
+      finishAITurn();
+      return;
+    }
     const target = player.field[targetIndex];
     const damage = attacker.atk - target.atk;
     setGameMessage(`Opponent's ${attacker.name} attacked ${target.name}.`);
@@ -112,13 +124,24 @@ function aiTurn() {
     animateCard(attacker.id, "is-attacking");
     animateCard(target.id, "targeted");
     setTimeout(() => {
-      if (damage >= 0) {
+      if (damage > 0) {
         player.field.splice(targetIndex, 1);
         player.lp -= damage;
         player.graveyard = true;
         renderField("player");
         renderGraveYard("player");
-      } else {
+      }
+      else if (damage === 0) {
+        player.field.splice(targetIndex, 1);
+        renderField("player");
+        ai.field.splice(0, 1);
+        renderField("opponent");
+        player.graveyard = true;
+        ai.graveyard = true;
+        renderGraveYard("player");
+        renderGraveYard("opponent");
+      }
+       else {
         ai.field.splice(0, 1);
         ai.lp -= Math.abs(damage);
         ai.graveyard = true;

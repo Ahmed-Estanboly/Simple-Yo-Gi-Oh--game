@@ -68,7 +68,7 @@ function endGame(loser, reason) {
   } else {
     playGameAudio(
       playerLost ? "audios/lost.mp3" : "audios/flawless_victory.mp3",
-      0.8,
+      1,
     );
   }
 
@@ -161,7 +161,9 @@ function drawCard(player) {
   const cardIndex = player === "player" ? playerCardIndex : opponentCardIndex;
   if (cardIndex >= gameState.players[player].deck.length) {
     setGameMessage(`${player} has no more cards to draw.`);
-    console.warn(`[Game] ${player} has no more cards to draw`);
+    console.log(`[Game] ${player} has no more cards to draw`);
+    // console.log(playerCardIndex);
+    
     return;
   }
   if (player === "player") {
@@ -181,6 +183,7 @@ function drawCard(player) {
   setGameMessage(`${player} drew a card.`);
   playGameAudio("audios/dealing-one-card.mp3", 0.45);
   renderHand(player);
+  renderDeck(player);
   const drawnCard = document.querySelector(`#${player}-hand .card:last-child`);
   if (drawnCard) {
     drawnCard.classList.remove("is-drawing");
@@ -354,13 +357,23 @@ function battlePhase() {
           animateCard(opponentCard.id, "targeted");
           playGameAudio("audios/attack.mp3", 0.65);
           setTimeout(() => {
-            if (damage >= 0) {
+            if (damage > 0) {
               gameState.players[opponent].field.splice(j, 1);
               gameState.players[opponent].lp -= damage;
               gameState.players[opponent].graveyard = true;
               renderField(opponent);
               renderGraveYard(opponent);
-            } else {
+            }else if(damage === 0){
+                console.log("Both cards destroyed");
+                gameState.players[opponent].field.splice(j, 1);
+                gameState.players[opponent].graveyard = true;
+                renderField(opponent);
+                renderGraveYard(opponent);
+                gameState.players[gameState.currentPlayer].field.splice(i, 1);
+                gameState.players[gameState.currentPlayer].graveyard = true;
+                renderField(gameState.currentPlayer);
+                renderGraveYard(gameState.currentPlayer);
+              } else {
               gameState.players[gameState.currentPlayer].field.splice(i, 1);
               gameState.players[gameState.currentPlayer].lp -= Math.abs(damage);
               gameState.players[gameState.currentPlayer].graveyard = true;

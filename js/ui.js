@@ -18,6 +18,8 @@ audioTracks.background.loop = true;
 audioTracks.background.volume = 0.18;
 audioTracks.intro.volume = 0.55;
 
+alert("Use The Browser's Full screen mode");
+
 function playGameAudio(track, volume = 0.6) {
   const source = typeof track === "string" ? track : track.src;
   const audio = typeof track === "string" ? new Audio(source) : track;
@@ -30,6 +32,7 @@ function playGameAudio(track, volume = 0.6) {
 function startBackgroundAudio() {
   if (audioTracks.background.paused) {
     audioTracks.background.play().catch(() => {});
+    audioTracks.background.volume = 0.7;
   }
 }
 
@@ -222,7 +225,9 @@ function renderGraveYard(player) {
 function renderDeck(player) {
   const deckElement = document.getElementById(`${player}-deck`);
   const deck = gameState.players[player]?.deck;
-
+  console.log(player);
+  // console.log(gameState);
+  
   if (!deckElement) {
     return;
   }
@@ -233,8 +238,8 @@ function renderDeck(player) {
   );
 
   deckElement.replaceChildren();
-
-  if (deck.length > 0) {
+  let index = player === "player"?playerCardIndex:opponentCardIndex;
+  if (deck.length >= index) {
     deckElement.textContent = "";
     const imageElement = document.createElement("img");
     imageElement.className = "card-back-image";
@@ -247,6 +252,11 @@ function renderDeck(player) {
     labelElement.className = "zone-label";
     labelElement.textContent = "DECK";
     deckElement.appendChild(labelElement);
+    
+    if(deck.length === index)deckElement.textContent = "";
+  }
+  else{
+    deckElement.textContent = "";
   }
 }
 function renderField(player) {
