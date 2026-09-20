@@ -112,6 +112,43 @@ function animateCard(cardId, animationClass) {
   cardElement.classList.add(animationClass);
 }
 
+function animateBattleClash(attackerId, targetId) {
+  const attacker = document.querySelector(`.card[data-id='${attackerId}']`);
+  const target = document.querySelector(`.card[data-id='${targetId}']`);
+  if (!attacker || !target) return;
+
+  const attackerIsPlayer = attacker.closest("#player-area") !== null;
+  const targetIsPlayer = target.closest("#player-area") !== null;
+  const animationClasses = [
+    "is-clashing-player-attacker",
+    "is-clashing-opponent-attacker",
+    "is-clashing-player-target",
+    "is-clashing-opponent-target",
+  ];
+  const attackerRect = attacker.getBoundingClientRect();
+  const targetRect = target.getBoundingClientRect();
+  const attackerCenter = attackerRect.left + attackerRect.width / 2;
+  const targetCenter = targetRect.left + targetRect.width / 2;
+  const clashTravel =
+    Math.abs(targetCenter - attackerCenter) / 2 + 6;
+
+  [attacker, target].forEach((card) => {
+    card.classList.remove(...animationClasses);
+    card.style.setProperty("--clash-travel", `${clashTravel}px`);
+  });
+  void document.body.offsetWidth;
+  attacker.classList.add(
+    attackerIsPlayer
+      ? "is-clashing-player-attacker"
+      : "is-clashing-opponent-attacker",
+  );
+  target.classList.add(
+    targetIsPlayer
+      ? "is-clashing-player-target"
+      : "is-clashing-opponent-target",
+  );
+}
+
 function animateBattleZones() {
   const playerZones = document.querySelectorAll(
     "#player-monster-zones .monster-zone",

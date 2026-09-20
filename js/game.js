@@ -353,8 +353,7 @@ function battlePhase() {
           setGameMessage(
             `${gameState.currentPlayer}'s ${card.name} attacked ${opponentCard.name}.`,
           );
-          animateCard(card.id, "is-attacking");
-          animateCard(opponentCard.id, "targeted");
+          animateBattleClash(card.id, opponentCard.id);
           playGameAudio("audios/attack.mp3", 0.65);
           setTimeout(() => {
             if (damage > 0) {

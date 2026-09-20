@@ -400,6 +400,26 @@ button {
   text-align: center;
 }
 
+.center-area {
+  z-index: 1;
+}
+
+.opponent-area:has(
+    .is-clashing-player-attacker,
+    .is-clashing-opponent-attacker,
+    .is-clashing-player-target,
+    .is-clashing-opponent-target
+  ),
+.player-area:has(
+    .is-clashing-player-attacker,
+    .is-clashing-opponent-attacker,
+    .is-clashing-player-target,
+    .is-clashing-opponent-target
+  ) {
+  z-index: 2;
+  overflow: visible;
+}
+
 .vs-indicator {
   color: var(--gold);
   font-family: Georgia, "Times New Roman", serif;
@@ -825,16 +845,30 @@ button {
   pointer-events: none;
 }
 
-.card.attacking,
-.card.is-attacking,
-.monster-card.attacking,
-.monster-card.is-attacking {
-  animation: monster-attack 420ms ease-in-out;
+.card.is-clashing-player-attacker,
+.card.is-clashing-opponent-attacker,
+.card.is-clashing-player-target,
+.card.is-clashing-opponent-target {
+  position: relative;
+  z-index: 3;
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.card.targeted,
-.monster-card.targeted {
-  animation: card-impact 420ms ease-in-out;
+.card.is-clashing-player-attacker {
+  animation-name: player-card-clash-attacker;
+}
+
+.card.is-clashing-opponent-attacker {
+  animation-name: opponent-card-clash-attacker;
+}
+
+.card.is-clashing-player-target {
+  animation-name: player-card-clash-target;
+}
+
+.card.is-clashing-opponent-target {
+  animation-name: opponent-card-clash-target;
 }
 
 .card.destroyed,
@@ -938,20 +972,59 @@ button {
   }
 }
 
-@keyframes monster-attack {
+@keyframes player-card-clash-attacker {
   35% {
-    transform: translateX(18%) scale(1.04);
+    transform: translateX(calc(var(--clash-travel) * -1)) scale(1.1) rotate(-2deg);
   }
-  70% {
-    transform: translateX(-4%) scale(1.02);
+  52% {
+    transform: translateX(calc(var(--clash-travel) * -0.55)) scale(1.04) rotate(1deg);
+  }
+  68% {
+    transform: translateX(calc(var(--clash-travel) * -0.12)) scale(1.01);
+  }
+}
+
+@keyframes opponent-card-clash-attacker {
+  35% {
+    transform: translateX(var(--clash-travel)) scale(1.1) rotate(2deg);
+  }
+  52% {
+    transform: translateX(calc(var(--clash-travel) * 0.55)) scale(1.04) rotate(-1deg);
+  }
+  68% {
+    transform: translateX(calc(var(--clash-travel) * 0.12)) scale(1.01);
+  }
+}
+
+@keyframes player-card-clash-target {
+  35% {
+    transform: translateX(calc(var(--clash-travel) * -1)) scale(1.04) rotate(1deg);
+  }
+  52% {
+    transform: translateX(calc(var(--clash-travel) * -0.55)) scale(1.02) rotate(-1deg);
+  }
+  68% {
+    transform: translateX(calc(var(--clash-travel) * -0.12)) scale(1.01);
+  }
+}
+
+@keyframes opponent-card-clash-target {
+  35% {
+    transform: translateX(var(--clash-travel)) scale(1.04) rotate(-1deg);
+  }
+  52% {
+    transform: translateX(calc(var(--clash-travel) * 0.55)) scale(1.02) rotate(1deg);
+  }
+  68% {
+    transform: translateX(calc(var(--clash-travel) * 0.12)) scale(1.01);
   }
 }
 
 @keyframes monster-destroyed {
   to {
+    transform: scale(0.72) rotate(7deg);
     filter: grayscale(1) blur(2px);
     opacity: 0;
-    transform: scale(0.72) rotate(7deg);
   }
 }
 
@@ -961,17 +1034,6 @@ button {
   }
   70% {
     transform: translateY(3%) scale(1.02);
-  }
-}
-
-@keyframes card-impact {
-  35% {
-    filter: brightness(1.45) saturate(1.35);
-    transform: translateX(-5px) scale(1.04);
-  }
-  65% {
-    filter: brightness(0.82) saturate(0.85);
-    transform: translateX(4px) scale(0.98);
   }
 }
 

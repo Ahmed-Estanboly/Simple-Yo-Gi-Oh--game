@@ -121,8 +121,7 @@ function aiTurn() {
     const damage = attacker.atk - target.atk;
     setGameMessage(`Opponent's ${attacker.name} attacked ${target.name}.`);
     playGameAudio("audios/attack.mp3", 0.65);
-    animateCard(attacker.id, "is-attacking");
-    animateCard(target.id, "targeted");
+    animateBattleClash(attacker.id, target.id);
     setTimeout(() => {
       if (damage > 0) {
         player.field.splice(targetIndex, 1);
